@@ -422,3 +422,34 @@ html,body{max-width:100vw;overflow-x:hidden}
 @media (pointer:coarse){
  :focus-visible{outline-width:2px;outline-offset:2px}
 }
+
+
+/* ===== MOBILE ANIMATION PARITY ===== */
+/* Entrada um pouco mais rápida no mobile (percepção melhor) */
+@media (pointer:coarse){
+  .rv.in{animation-duration:.75s}
+  .sp.in .w{animation-duration:.7s}
+  /* Mantém drift sutil no about */
+  .pic.in img{animation:drift 18s ease-in-out 1s infinite alternate}
+  /* Brilhos do pastel sempre ativos */
+  .gl{animation:tw 4.8s ease-in-out var(--d) infinite}
+  /* Botões com feedback de toque mais claro */
+  .btn:active{transform:scale(.96)}
+  .card:active{transform:translateY(-4px);box-shadow:0 12px 28px rgba(255,194,14,.22)}
+}
+
+/* Garante que elementos acima da dobra animem no load */
+.hero .rv,.hero .sp{will-change:opacity,transform}
+
+/* Canvas da fumaça sempre ocupa o stage */
+.shot .steam{width:110%;height:110%;left:-5%;top:-5%;opacity:1}
+
+/* MOBILE 3D TILT - idle motion mais perceptível */
+@media (pointer:coarse){
+  .stage{
+    transform:perspective(800px) rotateX(calc(var(--ny,0)*-3.2deg)) rotateY(calc(var(--nx,0)*4.2deg));
+  }
+  .shot .bgl{transform:translate3d(calc(var(--nx,0)*-10px),calc(var(--ny,0)*-7px),0)}
+  .shot .fgl{transform:translate3d(calc(var(--nx,0)*12px),calc(var(--ny,0)*8px),0)}
+  .shot .steam{transform:translate3d(calc(var(--nx,0)*-4px),calc(var(--ny,0)*-3px),0)}
+}

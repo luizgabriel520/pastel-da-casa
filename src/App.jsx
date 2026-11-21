@@ -5,7 +5,7 @@ import {Icon,Curve,Swash} from './ui.jsx';
 import Hero from './Hero.jsx';import Cart from './Cart.jsx';
 import SPRITE from './sprite.html';
 import logo from '../img/logo.jpg';import about from '../img/about.jpg';
-const NAV=[['inicio','Início'],['pasteis','Nossos Pastéis'],['sobre','Sobre Nós'],['depoimentos','Depoimentos'],['contato','Contato']];
+const NAV=[['inicio','Início'],['pasteis','Cardápio'],['sobre','Sobre Nós'],['depoimentos','Depoimentos'],['contato','Contato']];
 const WA=waUrl(CONFIG.mensagem),IG=CONFIG.instagram;
 const Arrow=()=><Icon k="arrow" style={{width:'1em',height:'1em'}}/>;
 function Header({active}){
@@ -18,9 +18,9 @@ function Header({active}){
   return(<header ref={hd} className={sc?'sc':''}><div className="wrap bar">
     <a className="brand" href="#inicio" aria-label="Pastel da Casa, início"><img src={logo} width="60" height="60" alt="Logotipo Pastel da Casa"/></a>
     <nav id="menu" aria-label="Principal" className={open?'open':''}>{NAV.map(([id,t],i)=><a key={id} href={'#'+id} className={active===id?'on':''} style={{'--k':i}} onClick={()=>setOpen(false)}>{id==='inicio'&&<Icon k="home"/>}{t}</a>)}
-      <a className="btn nav-wa" href={WA} target="_blank" rel="noopener" onClick={()=>setOpen(false)}><Icon k="wa"/>Peça pelo WhatsApp</a>
+      <a className="btn nav-wa" href={WA} target="_blank" rel="noopener" onClick={()=>setOpen(false)}><Icon k="wa"/>Faça seu pedido</a>
     </nav>
-    <a className="btn hdr-wa" href={WA} target="_blank" rel="noopener"><Icon k="wa"/>Peça pelo WhatsApp</a>
+    <a className="btn hdr-wa" href={WA} target="_blank" rel="noopener"><Icon k="wa"/>Faça seu pedido</a>
     <button className="burger" aria-label={open?'Fechar menu':'Abrir menu'} aria-expanded={open} aria-controls="menu" onClick={()=>setOpen(!open)}><span/></button>
   </div></header>)}
 const FEATS=[['hat',['Qualidade','em cada detalhe']],['heart',['Feito com','muito carinho']],['bolt',['Sabor inigualável']],['thumb',['Tradição que','conquista']]];
@@ -28,10 +28,25 @@ function Card({s,k,add}){
   const[pulse,setPulse]=useState(false);
   const onAdd=e=>{e.stopPropagation();add(k);setPulse(true);setTimeout(()=>setPulse(false),520)};
   return(
-    <Mv as="article" v="up" d={k*.09} className={`card${pulse?' added':''}`}
+    <Mv as="article" v="up" d={k*.08} className={`pcard${pulse?' added':''}${!s.p?' more':''}`}
       onPointerMove={e=>{const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty('--mx',(e.clientX-r.left)+'px');e.currentTarget.style.setProperty('--my',(e.clientY-r.top)+'px')}}>
-      <div className="cimg"><img src={s.img} width="170" height="103" loading="lazy" alt={`Pastel de ${s.n} (imagem ilustrativa)`}/></div>
-      <div className="cbody"><Icon k={s.i}/><span>{s.n}</span>{s.p&&<><b className="pr">{R(s.p)}</b><button type="button" className="add" onClick={onAdd}>Adicionar</button></>}</div>
+      <div className="pcard-img">
+        <img src={s.img} width="320" height="220" loading="lazy" alt={`Pastel de ${s.n} (imagem ilustrativa)`}/>
+      </div>
+      <div className="pcard-body">
+        <h3>{s.n}</h3>
+        {s.p?(
+          <>
+            <p className="pcard-price"><span>R$</span> {s.p.toFixed(2).replace('.',',')}</p>
+            <button type="button" className="pcard-add" onClick={onAdd}>
+              <svg className="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7zM9 8a3 3 0 0 1 6 0"/><path d="M9 12h6M12 9v6"/></svg>
+              Adicionar
+            </button>
+          </>
+        ):(
+          <p className="pcard-more">Peça pelo WhatsApp e confira todos os sabores</p>
+        )}
+      </div>
     </Mv>
   )}
 function About(){const pr=useParallax(12);
@@ -47,34 +62,58 @@ export default function App(){
   useEffect(()=>{const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&setActive(e.target.id)),{rootMargin:'-45% 0px -50% 0px'});NAV.forEach(([id])=>{const el=document.getElementById(id);el&&io.observe(el)});return()=>io.disconnect()},[]);
   const add=k=>{setCart(c=>({...c,[k]:Math.min(99,(c[k]||0)+1)}));setBump(b=>b+1)};
   const dep=CONFIG.depoimentos;
+  const menuItems=CONFIG.sabores;
   return(<>
     <span dangerouslySetInnerHTML={{__html:SPRITE}}/>
     <Header active={active}/>
     <main>
+      {/* HERO */}
       <section className="hero" id="inicio"><div className="wrap">
         <div className="hero-copy">
           <svg className="hat hero-enter" style={{'--d':'.05s'}} viewBox="0 0 120 60" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M30 38a14 14 0 0 1 2-27 20 20 0 0 1 38-2 15 15 0 0 1 18 14 14 14 0 0 1-8 15v12H30zM30 48h50M8 24l10 4M104 20l-8 6M60 2V0"/></svg>
           <h1 className="word hero-enter" style={{'--d':'.12s'}} aria-label="Pastel da Casa"><span className="p" aria-hidden="true">Pastel</span><span className="da" aria-hidden="true">da</span><span className="ca" aria-hidden="true">Casa</span></h1>
-          <p className="tag hero-enter" style={{'--d':'.28s'}}>Sabor caseiro, <em>feito com carinho!</em></p>
-          <Swash d={.32}/>
-          <p className="lead hero-enter" style={{'--d':'.4s'}}>Tradicionais e especiais, nossos pastéis são irresistíveis e feitos na hora!</p>
-          <a className="btn lg hero-enter" style={{'--d':'.52s'}} href={WA} target="_blank" rel="noopener"><Icon k="wa"/>Peça pelo WhatsApp<Arrow/></a>
+          <p className="tag hero-enter" style={{'--d':'.26s'}}>Pastéis feitos na hora, <em>com sabor de casa.</em></p>
+          <Swash d={.3}/>
+          <p className="lead hero-enter" style={{'--d':'.38s'}}>Qualidade, sabor e muito carinho em cada mordida!</p>
+          <div className="hero-cta hero-enter" style={{'--d':'.48s'}}>
+            <a className="btn lg" href="#pasteis"><Icon k="star"/>Ver cardápio<Arrow/></a>
+            <a className="btn ghost" href={WA} target="_blank" rel="noopener"><Icon k="wa"/>Peça pelo WhatsApp</a>
+          </div>
         </div>
         <Hero/>
-      </div><Curve/></section>
-      <section className="strip" aria-label="Diferenciais"><div className="wrap"><ul>{FEATS.map(([ic,tx],i)=><Mv as="li" v="up" key={ic} d={i*.1}><Icon k={ic}/><span>{tx.map((l,j)=><span key={j}>{j>0&&<br/>}{l}</span>)}</span></Mv>)}</ul></div></section>
-      <section className="sec" id="pasteis"><div className="wrap">
-        <Mv v="up" className="eyebrow">Nossos Pastéis</Mv>
-        <Sp as="h2" d={.08}>Uma variedade de sabores<br/>para <em>todos os gostos!</em></Sp>
-        <div className="cards" id="cards">{CONFIG.sabores.map((s,k)=><Card key={s.n} s={s} k={k} add={add}/>)}</div>
-        <p className="note">Imagens ilustrativas. Valores por unidade.</p></div></section>
+      </div></section>
+
+      {/* MENU FIRST — cardápio protagonista */}
+      <section className="menu-sec" id="pasteis">
+        <div className="menu-wave" aria-hidden="true"/>
+        <div className="wrap">
+          <Mv v="up" className="menu-head">
+            <span className="menu-spark" aria-hidden="true">✦</span>
+            <h2>Nosso <em>Cardápio</em></h2>
+            <p>Escolha o seu pastel favorito e adicione ao pedido:</p>
+          </Mv>
+          <div className="menu-grid">
+            {menuItems.map((s,k)=><Card key={s.n} s={s} k={k} add={add}/>)}
+          </div>
+          <Mv v="up" d={.2} className="menu-foot">
+            <a className="btn ghost" href={WA} target="_blank" rel="noopener"><Icon k="wa"/>Ver todos os sabores no WhatsApp<Arrow/></a>
+            <p className="note">Imagens ilustrativas. Valores por unidade.</p>
+          </Mv>
+        </div>
+      </section>
+
+      {/* Diferenciais compactos */}
+      <section className="strip" aria-label="Diferenciais"><div className="wrap"><ul>{FEATS.map(([ic,tx],i)=><Mv as="li" v="up" key={ic} d={i*.08}><Icon k={ic}/><span>{tx.map((l,j)=><span key={j}>{j>0&&<br/>}{l}</span>)}</span></Mv>)}</ul></div></section>
+
       <About/>
+
       <section className="sec dep" id="depoimentos"><div className="wrap">
         <Mv v="up" className="eyebrow">Depoimentos</Mv>
         {dep.length?<Sp as="h2" d={.08}>Quem provou, <em>aprovou!</em></Sp>:<Sp as="h2" d={.08}>Conte como foi <em>sua experiência!</em></Sp>}
         <div className="quotes">{dep.map((d,i)=><Mv as="blockquote" v="up" key={i} d={i*.1}>“{d.texto}”<br/><small>{d.autor}</small></Mv>)}</div>
         <Sp as="p" d={.1}>Já pediu o seu? Conte pra gente como foi no Instagram.</Sp>
         <Mv as="a" v="up" d={.18} className="btn ghost" href={IG} target="_blank" rel="noopener"><Icon k="ig"/>Falar no Instagram</Mv></div></section>
+
       <section className="wrap" id="pedido" style={{paddingBottom:10}}><Mv v="up" className="order">
         <div className="l"><Icon k="wa" cls="big"/><div><h3>Faça já seu pedido!</h3><small>É rápido, fácil e delicioso!</small></div></div>
         <div className="m"><Icon k="clock"/><div>Atendimento:<br/><strong>{CONFIG.atendimento}</strong></div></div>

@@ -72,9 +72,9 @@ export default function App(){
         <div className="hero-copy">
           <svg className="hat hero-enter" style={{'--d':'.05s'}} viewBox="0 0 120 60" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M30 38a14 14 0 0 1 2-27 20 20 0 0 1 38-2 15 15 0 0 1 18 14 14 14 0 0 1-8 15v12H30zM30 48h50M8 24l10 4M104 20l-8 6M60 2V0"/></svg>
           <h1 className="word hero-enter" style={{'--d':'.12s'}} aria-label="Pastel da Casa"><span className="p" aria-hidden="true">Pastel</span><span className="da" aria-hidden="true">da</span><span className="ca" aria-hidden="true">Casa</span></h1>
-          <p className="tag hero-enter" style={{'--d':'.26s'}}>Pastéis feitos <em>na hora,</em><br/>com sabor de casa.</p>
+          <p className="tag hero-enter" style={{'--d':'.26s'}}>Pastéis feitos na hora, <em>com sabor de casa.</em></p>
           <Swash d={.3}/>
-          <p className="lead hero-enter" style={{'--d':'.38s'}}>Qualidade, sabor e muito carinho<br/>em cada mordida! <span className="heart-ico" aria-hidden="true">♥</span></p>
+          <p className="lead hero-enter" style={{'--d':'.38s'}}>Qualidade, sabor e muito carinho em cada mordida!</p>
           <div className="hero-cta hero-enter" style={{'--d':'.48s'}}>
             <a className="btn lg" href="#pasteis"><Icon k="star"/>Ver cardápio<Arrow/></a>
             <a className="btn ghost" href={WA} target="_blank" rel="noopener"><Icon k="wa"/>Peça pelo WhatsApp</a>
@@ -88,8 +88,9 @@ export default function App(){
         <div className="menu-wave" aria-hidden="true"/>
         <div className="wrap">
           <Mv v="up" className="menu-head">
-            <h2><span className="menu-spark" aria-hidden="true">✦</span> Nosso Cardápio <span className="menu-spark" aria-hidden="true">✦</span></h2>
-            <p>Escolha o seu pastel favorito:</p>
+            <span className="menu-spark" aria-hidden="true">✦</span>
+            <h2>Nosso <em>Cardápio</em></h2>
+            <p>Escolha o seu pastel favorito e adicione ao pedido:</p>
           </Mv>
           <div className="menu-grid">
             {menuItems.map((s,k)=><Card key={s.n} s={s} k={k} add={add}/>)}

@@ -1,36 +1,23 @@
 import {useEffect,useRef,useState,Children,cloneElement,isValidElement,createElement as h} from 'react';
 
-/* IntersectionObserver agressivo + fallbacks para mobile */
-export function useInView(th=0.05){
+/* Observer robusto: mobile + desktop, com fallback */
+export function useInView(th=0.06){
   const ref=useRef(null),[on,set]=useState(false);
   useEffect(()=>{
     const el=ref.current;if(!el||on)return;
     let done=false;
     const reveal=()=>{if(done)return;done=true;set(true)};
-
-    // Já visível no carregamento?
     const r=el.getBoundingClientRect();
-    if(r.top<innerHeight*0.98&&r.bottom>innerHeight*-0.05){reveal();return}
-
-    // IntersectionObserver com rootMargin generoso
+    if(r.top<innerHeight*0.97&&r.bottom>innerHeight*-0.02){reveal();return}
     let io;
     if(typeof IntersectionObserver!=='undefined'){
-      io=new IntersectionObserver(es=>{
-        if(es[0].isIntersecting){reveal();io.disconnect()}
-      },{threshold:th,rootMargin:'40px 0px 80px 0px'});
+      io=new IntersectionObserver(es=>{if(es[0].isIntersecting){reveal();io.disconnect()}},
+        {threshold:th,rootMargin:'50px 0px 90px 0px'});
       io.observe(el);
     }
-
-    // Fallback por scroll (Safari antigo / edge cases)
-    const onScroll=()=>{
-      const rr=el.getBoundingClientRect();
-      if(rr.top<innerHeight*0.92&&rr.bottom>0){reveal();removeEventListener('scroll',onScroll)}
-    };
+    const onScroll=()=>{const rr=el.getBoundingClientRect();if(rr.top<innerHeight*0.9&&rr.bottom>0){reveal();removeEventListener('scroll',onScroll)}};
     addEventListener('scroll',onScroll,{passive:true});
-
-    // Último recurso: revela após 1.8s
-    const t=setTimeout(reveal,1800);
-
+    const t=setTimeout(reveal,2200);
     return()=>{clearTimeout(t);io&&io.disconnect();removeEventListener('scroll',onScroll)}
   },[th,on]);
   return[ref,on]
@@ -40,9 +27,8 @@ export function useParallax(amp){
   const ref=useRef(null);
   useEffect(()=>{
     if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-    // No mobile também aplica, só com amplitude menor
     const touch=matchMedia('(pointer:coarse)').matches;
-    const a=touch?amp*0.55:amp;
+    const a=touch?amp*0.5:amp;
     let tk=0;
     const f=()=>{
       tk=0;const el=ref.current;if(!el)return;
@@ -51,16 +37,22 @@ export function useParallax(amp){
       el.style.setProperty('--py',((((r.top+r.height/2)/innerHeight-.5)*2)*-a).toFixed(1)+'px')
     };
     const on=()=>{tk||(tk=requestAnimationFrame(f))};
-    addEventListener('scroll',on,{passive:true});
-    f();
+    addEventListener('scroll',on,{passive:true});f();
     return()=>removeEventListener('scroll',on)
   },[amp]);
   return ref
 }
 
+/* Reveal genérico com delay */
 export function Rv({as:T='div',d=0,className='',style,children,...p}){
   const[ref,on]=useInView();
   return h(T,{ref,className:`rv${on?' in':''} ${className}`.trim(),style:{'--d':d+'s',...style},...p},children)
+}
+
+/* Reveal com variante de movimento */
+export function Mv({as:T='div',d=0,v='up',className='',style,children,...p}){
+  const[ref,on]=useInView();
+  return h(T,{ref,className:`mv mv-${v}${on?' in':''} ${className}`.trim(),style:{'--d':d+'s',...style},...p},children)
 }
 
 const words=(node,c)=>Children.map(node,n=>{

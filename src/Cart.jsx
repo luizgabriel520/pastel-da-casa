@@ -10,12 +10,27 @@ export default function Cart({cart,setCart,open,setOpen,bump}){
   const chg=(k,d)=>setCart(c=>{const n={...c,[k]:Math.max(0,Math.min(99,(c[k]||0)+d))};if(!n[k])delete n[k];return n});
   useEffect(()=>{if(open){was.current=true;xr.current&&xr.current.focus()}else if(was.current)fb.current&&fb.current.focus()},[open]);
   useEffect(()=>{const k=e=>{if(e.key==='Escape')setOpen(false)};addEventListener('keydown',k);return()=>removeEventListener('keydown',k)},[]);
+  useEffect(()=>{document.body.classList.toggle('cart-open',open);return()=>document.body.classList.remove('cart-open')},[open]);
   return(<>
-    <button ref={fb} className={`fab${bump?' bump':''}`} key={bump} id="fab" aria-label="Abrir carrinho de pedido" onClick={()=>setOpen(true)}><svg className="i" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7zM9 8a3 3 0 0 1 6 0"/></svg><span className="t">Meu pedido</span><b>{qt}</b></button>
-    <div className={`shade${open?' open':''}`} onClick={()=>setOpen(false)}/>
+    <button ref={fb} className={`fab${bump?' bump':''}`} key={bump} id="fab" aria-label="Abrir carrinho de pedido" onClick={()=>setOpen(true)}>
+      <svg className="i" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7zM9 8a3 3 0 0 1 6 0"/></svg>
+      <span className="t">Meu pedido</span>
+      <b className={qt?'has':''}>{qt}</b>
+    </button>
+    <div className={`shade${open?' open':''}`} onClick={()=>setOpen(false)} aria-hidden={!open}/>
     <aside className={`cart${open?' open':''}`} id="cart" role="dialog" aria-modal="true" aria-labelledby="cT">
       <div className="ch"><h3 id="cT">Seu pedido</h3><button ref={xr} aria-label="Fechar carrinho" onClick={()=>setOpen(false)}>✕</button></div>
-      <ul id="cItems">{ks.length?ks.map(k=>{const s=CONFIG.sabores[k];return<li key={k}><div><b>{s.n}</b><small>{R(s.p)}</small></div><div className="q"><button aria-label={`Diminuir ${s.n}`} onClick={()=>chg(k,-1)}>−</button><span>{cart[k]}</span><button aria-label={`Aumentar ${s.n}`} onClick={()=>chg(k,1)}>+</button></div><b>{R(s.p*cart[k])}</b></li>}):<li className="empty">Seu carrinho está vazio. Escolha seus pastéis no cardápio.</li>}</ul>
+      <ul id="cItems">{ks.length?ks.map((k,i)=>{const s=CONFIG.sabores[k];return(
+        <li key={k} className="ci" style={{'--i':i}}>
+          <div><b>{s.n}</b><small>{R(s.p)}</small></div>
+          <div className="q">
+            <button aria-label={`Diminuir ${s.n}`} onClick={()=>chg(k,-1)}>−</button>
+            <span>{cart[k]}</span>
+            <button aria-label={`Aumentar ${s.n}`} onClick={()=>chg(k,1)}>+</button>
+          </div>
+          <b>{R(s.p*cart[k])}</b>
+        </li>
+      )}):<li className="empty">Seu carrinho está vazio. Escolha seus pastéis no cardápio.</li>}</ul>
       <div className="cf">
         <label>Bairro (Campo Grande-MS)<input id="cReg" list="cRegL" autoComplete="off" placeholder="Digite seu bairro" value={rg} onChange={e=>setRg(e.target.value)}/><datalist id="cRegL">{CONFIG.taxas.map(x=><option key={x.r} value={x.r}/>)}</datalist></label>
         <label>Endereço de entrega<input id="cEnd" autoComplete="street-address" placeholder="Rua, número e complemento" value={en} onChange={e=>setEn(e.target.value)}/></label>

@@ -24263,18 +24263,26 @@ Endere\xE7o: ${en.trim() || "informo na conversa"}${nm.trim() ? "\nNome: " + nm.
       const k = (e) => e.key === "Escape" && setOpen(false), c = (e) => !e.target.closest("header") && setOpen(false);
       addEventListener("keydown", k);
       document.addEventListener("click", c);
+      document.body.style.overflow = "hidden";
       return () => {
         removeEventListener("keydown", k);
         document.removeEventListener("click", c);
+        document.body.style.overflow = "";
       };
     }, [open]);
     return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("header", { ref: hd, className: sc ? "sc" : "", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: "wrap bar", children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("a", { className: "brand", href: "#inicio", "aria-label": "Pastel da Casa, in\xEDcio", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("img", { src: logo_default, width: "60", height: "60", alt: "Logotipo Pastel da Casa" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("nav", { id: "menu", "aria-label": "Principal", className: open ? "open" : "", children: NAV.map(([id, t], i) => /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("a", { href: "#" + id, className: active === id ? "on" : "", style: { "--k": i }, onClick: () => setOpen(false), children: [
-        id === "inicio" && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Icon, { k: "home" }),
-        t
-      ] }, id)) }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("a", { className: "btn", href: WA, target: "_blank", rel: "noopener", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("nav", { id: "menu", "aria-label": "Principal", className: open ? "open" : "", children: [
+        NAV.map(([id, t], i) => /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("a", { href: "#" + id, className: active === id ? "on" : "", style: { "--k": i }, onClick: () => setOpen(false), children: [
+          id === "inicio" && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Icon, { k: "home" }),
+          t
+        ] }, id)),
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("a", { className: "btn nav-wa", href: WA, target: "_blank", rel: "noopener", onClick: () => setOpen(false), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Icon, { k: "wa" }),
+          "Pe\xE7a pelo WhatsApp"
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("a", { className: "btn hdr-wa", href: WA, target: "_blank", rel: "noopener", children: [
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Icon, { k: "wa" }),
         "Pe\xE7a pelo WhatsApp"
       ] }),
@@ -24294,7 +24302,10 @@ Endere\xE7o: ${en.trim() || "informo na conversa"}${nm.trim() ? "\nNome: " + nm.
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { children: s.n }),
         s.p && /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_jsx_runtime4.Fragment, { children: [
           /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("b", { className: "pr", children: R(s.p) }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { className: "add", onClick: () => add(k), children: "Adicionar" })
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("button", { type: "button", className: "add", onClick: (e) => {
+            e.stopPropagation();
+            add(k);
+          }, children: "Adicionar" })
         ] })
       ] })
     ] });

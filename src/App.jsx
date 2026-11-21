@@ -12,18 +12,22 @@ function Header({active}){
   const[open,setOpen]=useState(false),[sc,setSc]=useState(false),hd=useRef();
   useEffect(()=>{let tk=0;const f=()=>{tk=0;const y=scrollY,mx=document.documentElement.scrollHeight-innerHeight;setSc(y>24);hd.current.style.setProperty('--p',mx>0?Math.min(1,y/mx):0)};
     const on=()=>{tk||(tk=requestAnimationFrame(f))};addEventListener('scroll',on,{passive:true});f();return()=>removeEventListener('scroll',on)},[]);
-  useEffect(()=>{if(!open)return;const k=e=>e.key==='Escape'&&setOpen(false),c=e=>!e.target.closest('header')&&setOpen(false);addEventListener('keydown',k);document.addEventListener('click',c);return()=>{removeEventListener('keydown',k);document.removeEventListener('click',c)}},[open]);
+  useEffect(()=>{if(!open)return;const k=e=>e.key==='Escape'&&setOpen(false),c=e=>!e.target.closest('header')&&setOpen(false);
+    addEventListener('keydown',k);document.addEventListener('click',c);document.body.style.overflow='hidden';
+    return()=>{removeEventListener('keydown',k);document.removeEventListener('click',c);document.body.style.overflow=''}},[open]);
   return(<header ref={hd} className={sc?'sc':''}><div className="wrap bar">
     <a className="brand" href="#inicio" aria-label="Pastel da Casa, início"><img src={logo} width="60" height="60" alt="Logotipo Pastel da Casa"/></a>
-    <nav id="menu" aria-label="Principal" className={open?'open':''}>{NAV.map(([id,t],i)=><a key={id} href={'#'+id} className={active===id?'on':''} style={{'--k':i}} onClick={()=>setOpen(false)}>{id==='inicio'&&<Icon k="home"/>}{t}</a>)}</nav>
-    <a className="btn" href={WA} target="_blank" rel="noopener"><Icon k="wa"/>Peça pelo WhatsApp</a>
+    <nav id="menu" aria-label="Principal" className={open?'open':''}>{NAV.map(([id,t],i)=><a key={id} href={'#'+id} className={active===id?'on':''} style={{'--k':i}} onClick={()=>setOpen(false)}>{id==='inicio'&&<Icon k="home"/>}{t}</a>)}
+      <a className="btn nav-wa" href={WA} target="_blank" rel="noopener" onClick={()=>setOpen(false)}><Icon k="wa"/>Peça pelo WhatsApp</a>
+    </nav>
+    <a className="btn hdr-wa" href={WA} target="_blank" rel="noopener"><Icon k="wa"/>Peça pelo WhatsApp</a>
     <button className="burger" aria-label={open?'Fechar menu':'Abrir menu'} aria-expanded={open} aria-controls="menu" onClick={()=>setOpen(!open)}><span/></button>
   </div></header>)}
 const FEATS=[['hat',['Qualidade','em cada detalhe']],['heart',['Feito com','muito carinho']],['bolt',['Sabor inigualável']],['thumb',['Tradição que','conquista']]];
 function Card({s,k,add}){
-  return<Rv as="article" d={k*.07} className="card" onPointerMove={e=>{const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty('--mx',e.clientX-r.left+'px');e.currentTarget.style.setProperty('--my',e.clientY-r.top+'px')}}>
+  return<Rv as="article" d={k*.07} className="card" onPointerMove={e=>{const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty('--mx',(e.clientX-r.left)+'px');e.currentTarget.style.setProperty('--my',(e.clientY-r.top)+'px')}}>
     <img src={s.img} width="170" height="103" loading="lazy" alt={`Pastel de ${s.n} (imagem ilustrativa)`}/>
-    <div><Icon k={s.i}/><span>{s.n}</span>{s.p&&<><b className="pr">{R(s.p)}</b><button className="add" onClick={()=>add(k)}>Adicionar</button></>}</div></Rv>}
+    <div><Icon k={s.i}/><span>{s.n}</span>{s.p&&<><b className="pr">{R(s.p)}</b><button type="button" className="add" onClick={e=>{e.stopPropagation();add(k)}}>Adicionar</button></>}</div></Rv>}
 function About(){const pr=useParallax(10);
   return<section className="about" id="sobre"><Curve/><div className="wrap sec">
     <Rv className="pic"><img ref={pr} src={about} width="514" height="251" loading="lazy" alt="Pastel dourado aberto sobre tábua de madeira (imagem ilustrativa)"/></Rv>
